@@ -6,8 +6,8 @@ class LeapMotionListener(Leap.Listener):
     bone_names = ['Metacarpal', 'Proximal', 'Intermediate', 'Distal']
     state_names = ['STATE_INVALID', 'STATE_START', 'STATE_UPDATE', 'STATE_END']
 
-    def __init__(self, glWidget):
-        self.glWidget = glWidget
+    def __init__(self, widget):
+        self.widget = widget
         Leap.Listener.__init__(self)
 
     def on_init(self, controller):
@@ -36,5 +36,5 @@ class LeapMotionListener(Leap.Listener):
         #print "Frame id: %d, timestamp: %d, hands: %d, fingers: %d, tools: %d, gestures: %d" % (
         #      frame.id, frame.timestamp, len(frame.hands), len(frame.fingers), len(frame.tools), len(frame.gestures()))
               
-        self.glWidget.drawFrame(frame)
+        self.widget.onFrame(frame)
 

@@ -42,11 +42,7 @@ if __name__ == '__main__':
     y = [1]*class1train.shape[0] + [3]*class3train.shape[0] + [4]*class4train.shape[0] + [10]*class10train.shape[0] + [13]*class13train.shape[0] + [14]*class14train.shape[0] + [15]*class15train.shape[0] + [16]*class16train.shape[0]
     
     
-    classifier = KNeighborsClassifier(n_neighbors=3)
-    classifier.fit(train, y)
-    
-    print "learning succesfull finished"
-    
+      
     testCouplesList = [(class1test[i, :], 1) for i in range(class1test.shape[0])] + \
                       [(class3test[i, :], 3) for i in range(class3test.shape[0])] + \
                       [(class4test[i, :], 4) for i in range(class4test.shape[0])] + \
@@ -55,21 +51,26 @@ if __name__ == '__main__':
                       [(class14test[i, :], 14) for i in range(class14test.shape[0])] + \
                       [(class15test[i, :], 15) for i in range(class15test.shape[0])] + \
                       [(class16test[i, :], 16) for i in range(class16test.shape[0])]
-                      
-    trueRate = 0.0
-    falseRate = 0.0
-    for test in testCouplesList:
-        predClass = classifier.predict(test[0])
-        realClass = test[1]
-        print str(predClass) + " " + str(realClass)
-        if predClass == realClass:
-            trueRate += 1
-        else:
-            falseRate += 1
     
-    trueRate /= len(testCouplesList)
-    falseRate /= len(testCouplesList)
-    
-    print "True  rate: " + str(trueRate) + "%"
-    print "False rate: " + str(falseRate) + "%"
+    for i in range(1,4):            
+        classifier = KNeighborsClassifier(n_neighbors=i)
+        classifier.fit(train, y)    
+        print "learning succesfull finished " + str(i)
+                          
+        trueRate = 0.0
+        falseRate = 0.0
+        for test in testCouplesList:
+            predClass = classifier.predict(test[0])
+            realClass = test[1]
+            #print str(predClass) + " " + str(realClass)
+            if predClass == realClass:
+                trueRate += 1
+            else:
+                falseRate += 1
+        
+        trueRate /= len(testCouplesList)
+        falseRate /= len(testCouplesList)
+        
+        print "True  rate: " + str(trueRate) + "%"
+        print "False rate: " + str(falseRate) + "%"
     

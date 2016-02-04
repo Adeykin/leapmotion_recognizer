@@ -1,4 +1,6 @@
+from sklearn import tree, svm
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.naive_bayes import GaussianNB
 import numpy as np
 import numpy.matlib
 import math
@@ -12,6 +14,24 @@ def readData(filename, trainPercent = 0.3):
     train = data[0:trainN-1, :]
     test  = data[trainN:data.shape[0], :]
     return train, test
+    
+def testPrecision(classifier, data):
+    trueRate = 0.0
+    falseRate = 0.0
+    for test in data:
+        predClass = classifier.predict(test[0])
+        realClass = test[1]
+        #print str(predClass) + " " + str(realClass)
+        if predClass == realClass:
+            trueRate += 1
+        else:
+            falseRate += 1
+    
+    trueRate /= len(data)
+    falseRate /= len(data)
+    
+    print "True  rate: " + str(trueRate) + "%"
+    print "False rate: " + str(falseRate) + "%"
 
 if __name__ == '__main__':
     
@@ -54,23 +74,39 @@ if __name__ == '__main__':
     
     for i in range(1,4):            
         classifier = KNeighborsClassifier(n_neighbors=i)
-        classifier.fit(train, y)    
-        print "learning succesfull finished " + str(i)
-                          
-        trueRate = 0.0
-        falseRate = 0.0
-        for test in testCouplesList:
-            predClass = classifier.predict(test[0])
-            realClass = test[1]
-            #print str(predClass) + " " + str(realClass)
-            if predClass == realClass:
-                trueRate += 1
-            else:
-                falseRate += 1
-        
-        trueRate /= len(testCouplesList)
-        falseRate /= len(testCouplesList)
-        
-        print "True  rate: " + str(trueRate) + "%"
-        print "False rate: " + str(falseRate) + "%"
+        classifier = classifier.fit(train, y)    
+        print "KNN learning succesfull finished " + str(i)
+        testPrecision(classifier, testCouplesList)
+    
+    classifier = tree.DecisionTreeClassifier()
+    classifier = classifier.fit(train, y)
+    print "Decision tree learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+    
+    classifier = GaussianNB()
+    classifier = classifier.fit(train, y)
+    print "Naive Bayes learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+    
+    classifier = svm.SVC()
+    classifier = classifier.fit(train, y)
+    print "SVC learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+    """
+    classifier = svm.SVC(decision_function_shape='ovo')
+    classifier = classifier.fit(train, y)
+    print "SVC OVO learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+    """
+    classifier = svm.NuSVC()
+    classifier = classifier.fit(train, y)
+    print "NuSVC learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+    
+    classifier = svm.LinearSVC()
+    classifier = classifier.fit(train, y)
+    print "LinearSVC learning succesfull finished "
+    testPrecision(classifier, testCouplesList)
+
+    
     
